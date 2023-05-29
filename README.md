@@ -1,3 +1,4 @@
-# Python-OOP-learning-
-make a library-controlled system
+# library-controlled-system
+make a library-controlled system has GUI
+
 
