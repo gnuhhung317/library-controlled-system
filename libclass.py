@@ -3,8 +3,10 @@ import hashlib
 import time
 
 def nice(book_name):
+    #remove the supernumerary space
         return " ".join(book_name.split())
 def get_sha256_hash(data):
+    #hash the password of user
     hash_object = hashlib.sha256(data.encode())
     return hash_object.hexdigest()
 class Book:
@@ -15,31 +17,33 @@ class Book:
         self.quantity=int(quantity) #số lượng sách
         self.checkoutbook=int(checkoutbook) #số lượng sách đã bị mượn
     def infor(self):
-        return f"Tựa đề sách là {self.title} của {self.author} với số ibs là {self.ibsn}\n"
+        #return book information
+        return f"Book's title is {self.title} by {self.author} with ibs number is {self.ibsn}\n"
     def is_available(self):
         if self.quantity-self.checkoutbook>0: #kiểm tra số sách hiện tại
-            return f"{self.title} có sẵn {self.quantity-self.checkoutbook}!\n"
+            return f"{self.title} has {self.quantity-self.checkoutbook}!\n"
         else:
-            return f"{self.title} không có sẵn!\n"
+            return f"{self.title} is not available!\n"
     def check_out(self,history,username,book):
         if int(self.quantity)-self.checkoutbook>0:
             self.checkoutbook+=1 #tăng số sách self bị mượn thêm 1
             history.append(f"{time.ctime(time.time())} {username} đã mượn {book.title}") #lưu lịch sử mượn vào list để thêm vào lưu vào csdl sau phiên làm việc
-            return f"{self.title} của bạn đây!\nLịch sử mượn trả sẽ được cập nhật sau phiên làm việc"
+            return f"{self.title} here!\nThe checked out history will update after working session"
         else:
-            return f"{self.title} đã bị mượn hết!\n"
+            return f"{self.title} have been all checked out!\n"
     def return_book(self,history,username,book):
         if self.checkoutbook>0:
-            history.append(f"{time.ctime(time.time())} {username} đã trả {book.title}") #lưu lịch sử mượn vào list để thêm vào lưu vào csdl sau phiên làm việc
+            history.append(f"{time.ctime(time.time())} {username} returned {book.title}") #lưu lịch sử mượn vào list để thêm vào lưu vào csdl sau phiên làm việc
             self.checkoutbook-=1 #giảm số sách self bị giảm thêm 1#
-            return f"{self.title} đã được trả!\nlịch sử mượn trả sẽ được cập nhật sau phiên làm việc\n"   
+            return f"{self.title} have been returned!\nThe returned history will update after working session\n"   
         else:
-            return f"{self.title} chưa được mượn cuốn nào cả!\n"
+            return f"{self.title} haven't been checked out!\n"
 class Library:
     def __init__(self):
         self.books=[]
         self.admin=False
     def login(self,username,password,user_data,admin_data):
+        #compare username password with userdata and admindata, check the role when login
         if username in user_data and user_data[username]==get_sha256_hash(password): #kiểm tra mật khẩu sau khi hash có giống trong từ điển dữ liệu người dúng không
             return True
         elif username in admin_data and admin_data[username]==get_sha256_hash(password):
@@ -52,48 +56,54 @@ class Library:
 
     def remove_book(self,book):
         self.books.remove(book)
-        return f"Đã xóa sách {book.title}"
+        return f"Removed {book.title}"
     def search_book_by_title(self,keyword=str):
         matched_book = [book for book in self.books if keyword.lower() in book.title.lower()]
         if not matched_book:
-            return "can't find the book"
+            return "Can't find the book"
         else:
-            find="Tìm được:\n"
+            find="Find:\n"
             i=1
             for book in matched_book:
-                find+=f"\n{i}. {book.title} của {book.author} với số ibs là {book.ibsn}: {int(book.quantity)-book.checkoutbook} quyển\n"
+                find+=f"\n{i}. {book.title} by {book.author} with ibs number {book.ibsn}: {int(book.quantity)-book.checkoutbook}\n"
                 i+=1
         return find
     
     def search_book_by_author(self,keyword=str):
+        if len(keyword)==0:
+            return "Please enter the author"
         matched_book = [book for book in self.books if keyword.lower() in book.author.lower()]
         if len(matched_book)==0:
             return "Can't find the author"
         else:
-            find="Tìm được:\n"
+            find="Find:\n"
             i=1
             for book in matched_book:
-                find+=f"\n{i}. {book.title} của {book.author} với số ibs là {book.ibsn}: {int(book.quantity)-book.checkoutbook} quyển\n"
+                find+=f"\n{i}. {book.title} by {book.author} with ibs number {book.ibsn}: {int(book.quantity)-book.checkoutbook} \n"
                 i+=1
         return find
     
     def display_book(self):
         i=1
+        #creat a string to save book's information of lib
         display=""
         for book in self.books:
-            display+=f"{i}. {book.title} của {book.author}: {book.quantity} quyển\n"
+            display+=f"{i}. {book.title} by {book.author}: {book.quantity-book.checkoutbook} \n"
             i+=1
+        if display=="":
+            return "There's no book in the library!"
         return display
     
     def display_available_book(self):
         available_book=[book for book in self.books if book.quantity-book.checkoutbook>0] #tạo danh sách sách có số quyển sách hiện có lớn hơn 0
         if len(available_book)==0:
-            return "Không có sách nào có sẵn!"
+            return "There no available book in the library!"
         else:
+            #creat a string to save available book's information of lib
             show=""
             i=1
             for book in available_book:
-                show+=f"{i}. {book.title} của {book.author}: {book.quantity} quyển\n"
+                show+=f"{i}. {book.title} by {book.author}: {book.quantity-book.checkoutbook} \n"
                 i += 1
             return show
 Mylib=Library()

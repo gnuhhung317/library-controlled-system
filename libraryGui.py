@@ -93,18 +93,28 @@ class LibraryControl:
     def GetInput(self):
         self.entrytext=nice(self.entry.get())
     def GetAndClear(self):
-        self.ClearOutput()
-        self.GetInput()
+        #Xóa output và lưu thay đổi input
+        self.textbox.delete("1.0",END)
+        self.entrytext=nice(self.entry.get())
+        #trả về input
+        return self.entrytext
+        
+    def check_entry(self,i):
+        #kiểm tra entry có hợp lệ không
+        if len(self.entrytext)==0:
+            self.textbox.insert("1.0","Please enter book name!")
+        elif i==0:
+            self.textbox.insert("1.0","Can't find this book!")
     def Infor(self):
         self.GetAndClear()
         i=0
+        
         for book in self.library:
             if book.title.lower()==self.entrytext.lower():
                 i+=1
                 self.textbox.insert(f"{i}.0",book.infor())
                 i+=1
-        if i==0:
-            self.textbox.insert("1.0","Can't find this book!")
+        self.check_entry(i)
     def Checkavai(self):
         self.GetAndClear()
         i=0
@@ -113,8 +123,7 @@ class LibraryControl:
                 i+=1
                 self.textbox.insert(f"{i}.0",book.is_available())
                 i+=1
-        if i==0:
-            self.textbox.insert("1.0","Can't find this book!")
+        self.check_entry(i)
     def Checkout(self):
         self.GetAndClear()
         i=0
@@ -123,8 +132,7 @@ class LibraryControl:
                 i+=1
                 self.textbox.insert(f"{i}.0",book.check_out(history,self.username,book))
                 break
-        if i==0:
-            self.textbox.insert("1.0","Can't find this book!")
+        self.check_entry(i)
     def Return(self):
         self.GetAndClear()
         i=0
@@ -133,8 +141,7 @@ class LibraryControl:
                 i=1
                 self.textbox.insert(f"{i}.0",book.return_book(history,self.username,book))
                 
-        if i==0:
-            self.textbox.insert("1.0","Can't find this book!")
+        self.check_entry(i)
     def FindByAuthor(self):
         self.GetAndClear()
         text=Mylib.search_book_by_author(self.entrytext)
