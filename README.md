@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Library Control System
 
 The Library Control System is a simple GUI application developed using Python and the Tkinter library. It provides functionality for managing a library, including book information, availability, check-out, return, search, and administration tasks.
@@ -43,5 +44,9 @@ Contributions are welcome! If you find any issues or have suggestions for improv
 
 This project is licensed under the [MIT License](LICENSE).
 
+=======
+# library-controlled-system
+make a library-controlled system has GUI
+>>>>>>> d4af1632a2eae25abd037c5768a9bfa6ba17d030
 
 
